@@ -1,8 +1,7 @@
 ssh-ed25519
 ssh-ed25519.pub
 
-venv/
-myenv/
+
 
 __pycache__/
 

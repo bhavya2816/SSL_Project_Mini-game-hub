@@ -13,7 +13,7 @@ login() {
 		echo -e "Username doesnot exist\nDo you wish to Register as a new user?[y/n]"
 		 read opinion;
         	if [ "$opinion" == y ]; then
-			Register
+			Register "$1"
 		else
 			exit;
 		fi
@@ -61,17 +61,11 @@ player-2_login() {
 
 #Function to register new users
 Register() {
-	
-                echo "Please re-enter your Username";
-                read username;
-		if grep -q "$username\	" users.tsv; then
-			echo "Username already exist"
-			Register
-		else	
-               		echo "Enter your password";
-                	read password;
-                	echo -e "$username\t$(Hash_string "$password" )" >> users.tsv
-        	fi
+				username="$1"
+		   		echo "Enter your password to register";
+              	read password;
+              	echo -e "$username\t$(Hash_string "$password" )" >> users.tsv
+
 
 }
 
