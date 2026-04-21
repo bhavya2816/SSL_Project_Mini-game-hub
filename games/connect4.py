@@ -3,6 +3,7 @@ import sys
 import numpy as np
 import pygame
 from game import basegame
+
 #Class to control the game flow and manage the board state
 class connect4(basegame):
     #Initializing the game with player names, board dimensions, and setting up the pygame window
@@ -35,11 +36,13 @@ class connect4(basegame):
                 if self.board[r][col]==0:
                     self.board[r][col]=player
                     #Drawing the piece on the pygame window at the appropriate position based on the row and column
-                    pygame.draw.circle(self.screen, (255,0,0) if self.player==1 else (0,0,255),
+                    pygame.draw.circle(self.screen, (255, 180, 150) if self.player==1 else (180, 160, 255) ,
                                     (int((self.length-self.Columns*self.blocksize)/2+ col*self.blocksize + self.blocksize/2),
                                         int(r*self.blocksize + self.blocksize + self.blocksize/2)),
                                     60)
-                    return r
+                    
+                    pygame.display.update()
+                    return 1
                 
             return 0
     
@@ -49,8 +52,8 @@ class connect4(basegame):
     
     #Function to display the winner and end the game
     def show_winner(self):
-        self.screen.fill((255,215,0))
-        font = pygame.font.SysFont(None, 150)
+        self.screen.fill((255,180,150  ))
+        font = pygame.font.SysFont("Arial", 150)
         if self.winner != None:
             text = font.render(f"{self.winner} wins! ", True, (0, 0, 0))
         else:
@@ -61,10 +64,9 @@ class connect4(basegame):
     #pygame function to draw the game board
     def draw_board(self, board, screen):
         
-        
         for c in range(self.Columns):
             for r in range(self.Rows):
-                pygame.draw.rect(self.screen, (214,181,136),
+                pygame.draw.rect(self.screen, ((170, 230, 210)),
                                 ((self.length-self.Columns*self.blocksize)/2+c*self.blocksize,r*self.blocksize+self.blocksize,
                                 self.blocksize, self.blocksize))
 
@@ -78,14 +80,14 @@ class connect4(basegame):
     #Function to handle the game loop and user interactions
     def play(self):
             
-            self.screen.fill((255,255,255))
+            self.screen.fill((255, 245, 240))
             self.draw_board(self.board, self.screen)
 
             while self.runningstatus:
                
                 #Displaying messages related to invalid moves or game outcomes at the top of the screen
-                font = pygame.font.SysFont(None, 50)
-                text = font.render(self.message, True, (0, 0, 0))
+                font = pygame.font.SysFont(None,80)
+                text = font.render(self.message, True, (0,0,0))
                 self.screen.blit(text, (700, 10)) 
 
                 self.message=f"{self.Get_current_player()}'s turn. Click to drop a piece."
@@ -102,6 +104,12 @@ class connect4(basegame):
                         self.drop_piece(col,self.player)
                         if self.movevalid:
                             if self.check_win(self.player):
+                                pygame.draw.rect(self.screen, (255,245,240), (0,0,self.length,100))
+                                self.message=f"{self.Get_current_player()} wins!"
+                                text = font.render(self.message, True, (0,0,0))                                
+                                self.screen.blit(text, (700, 10))
+                                pygame.display.update()
+                                pygame.time.wait(1000)
                                 if self.player==1:
                                     self.winner=self.player1
                                 elif self.player==2:
@@ -128,31 +136,32 @@ class connect4(basegame):
                     self.runningstatus=False
                 
                  #Clearing the message area at the top of the screen before displaying any new messages related to invalid moves or game outcomes
-                pygame.draw.rect(self.screen, (255,255,255), (0,0,self.length,100))
+                pygame.draw.rect(self.screen, (255,245,240), (0,0,self.length,100))
 
             pygame.quit()
             
 
                          
 
-#Checking for win conditions in all possible directions (horizontal, vertical, diagonal)
+    #Checking for win conditions in all possible directions (horizontal, vertical, diagonal)
     def check_win(self,player):
-        #creating a boolean array to check for 4 in a row for the current player
+        #Creating a boolean array to check for 4 in a row for the current player using masking
+
         win = (self.board == player)
         #in horizontal direction
         if np.any(win[:, :-3] & win[:, 1:-2] & win[:, 2:-1] & win[:, 3:]):
             return True
         #in vertical direction
-        if np.any(win[:4, :] & win[1:5, :] & win[2:6, :] & win[3:, :]):
+        elif np.any(win[:-3, :] & win[1:-2, :] & win[2:-1, :] & win[3:, :]):
             return True
         #in diagonal direction (top-right to bottom-left)
-        if np.any(win[:-3, :-3] & win[1:-2, 1:-2] & win[2:-1, 2:-1] & win[3:, 3:]):
+        elif np.any(win[:-3, :-3] & win[1:-2, 1:-2] & win[2:-1, 2:-1] & win[3:, 3:]):
             return True 
         #in diagonal direction (top-left to bottom-right)
-        if np.any(win[:-3, 3:7] & win[1:-2, 2:6] & win[2:-1, 1:5] & win[3:7, 0:4]):
+        elif np.any(win[:-3, 3:7] & win[1:-2, 2:6] & win[2:-1, 1:5] & win[3:7, 0:4]):
             return True
-
-        return False
+        else:
+            return False
 
 
 
