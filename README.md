@@ -2,7 +2,7 @@
 Mini Game Hub
 Authors :
             Bhavya Machupalli
-            Subha srivalli Athreyi Yanala
+            ,Subha srivalli Athreyi Yanala
 
 Mini Game Hub is a Two-user game platform built using Bash and Python
 The system allows users to :
