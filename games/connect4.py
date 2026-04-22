@@ -19,8 +19,60 @@ class connect4(basegame):
             self.player=2
         self.blocksize=180
         self.message=""
+        self.X_posn=(self.length-self.Columns*self.blocksize)/2
+        self.Y_posn=(self.height-self.Rows*self.blocksize)/2
         pygame.init()
         self.screen=pygame.display.set_mode((self.length, self.height))
+        
+    #pygame function to draw the game board
+    def draw_board(self, board, screen):
+        self.screen.fill((245,245,220))
+
+        pygame.draw.rect(self.screen,(0,0,255),(self.X_posn-100,self.Y_posn-50,
+                         self.Columns*self.blocksize+200,self.blocksize*self.Rows+100))
+        pygame.draw.rect(self.screen,(0,0,0),(self.X_posn-100,self.Y_posn-50,
+                         self.Columns*self.blocksize+200,self.blocksize*self.Rows+100),8)
+        for c in range(self.Columns):
+            for r in range(self.Rows):
+                pygame.draw.rect(self.screen, ((0,0,255)),
+                                ((self.length-self.Columns*self.blocksize)/2+c*self.blocksize,r*self.blocksize+self.blocksize,
+                                self.blocksize, self.blocksize))
+
+                pygame.draw.circle(self.screen, (245,245,220),(int((self.length-self.Columns*self.blocksize)/2+ c*self.blocksize + self.blocksize/2),
+                                    int(r*self.blocksize + self.blocksize + self.blocksize/2)),70)
+                pygame.draw.circle(self.screen,(0,0,0),(int((self.length-self.Columns*self.blocksize)/2+ c*self.blocksize + self.blocksize/2),
+                                    int(r*self.blocksize + self.blocksize + self.blocksize/2)),70,5)
+                
+                pygame.draw.circle(self.screen,(0,0,0),(int((self.length-self.Columns*self.blocksize)/2+ c*self.blocksize + self.blocksize/2),
+                                    int(r*self.blocksize + self.blocksize + self.blocksize/2)),80,5)
+        
+
+    #to get previous board after each move
+    def get_board(self):
+        for r in range(7):
+            for c in range(7):
+                if self.board[r][c] !=0:
+                    pygame.draw.circle(self.screen,(255,0,0) if self.board[r][c]==1 else (255,255,0),
+                                       (self.X_posn+c*self.blocksize+self.blocksize/2,
+                                        self.Y_posn+r*self.blocksize+self.blocksize/2+9),66)
+
+
+    #Function for animating the drop
+    def drop_animation(self,col,final_row,Player):
+        x=self.X_posn+col*self.blocksize+self.blocksize//2
+        y=100
+        target_y=self.Y_posn+final_row*self.blocksize+self.blocksize/2
+
+        while y<=target_y+10:
+            self.draw_board(self.board,self.screen)
+            self.get_board()
+
+            pygame.draw.circle(self.screen,(255,0,0) if Player==1 else (255,255,0),(x,y),66)
+            pygame.display.update()
+            clock=pygame.time.Clock()
+            clock.tick(60)
+
+            y+=20
 
 
     #Function to drop a piece in the selected column 
@@ -34,114 +86,13 @@ class connect4(basegame):
             #Dropping the piece in the lowest available row in the selected column
             for r in range(6,-1,-1):
                 if self.board[r][col]==0:
-                    self.board[r][col]=player
-                    #Drawing the piece on the pygame window at the appropriate position based on the row and column
-                    pygame.draw.circle(self.screen, (255, 180, 150) if self.player==1 else (180, 160, 255) ,
-                                    (int((self.length-self.Columns*self.blocksize)/2+ col*self.blocksize + self.blocksize/2),
-                                        int(r*self.blocksize + self.blocksize + self.blocksize/2)),
-                                    60)
                     
-                    pygame.display.update()
-                    return 1
-                
+                    self.drop_animation(col,r,player)
+                    self.board[r][col]=player
+                    
+                    pygame.display.update()                    
+                    return 1                
             return 0
-    
-    #Function to check if the board is full (indicating a draw)       
-    def board_full(self):
-        return np.all(self.board != 0)
-    
-    #Function to display the winner and end the game
-    def show_winner(self):
-        self.screen.fill((255,180,150  ))
-        font = pygame.font.SysFont("Arial", 150)
-        if self.winner != None:
-            text = font.render(f"{self.winner} wins! ", True, (0, 0, 0))
-        else:
-            text = font.render("It's a draw!", True, (0, 0, 0))
-        self.screen.blit(text, (self.length//2 - text.get_width()//2, self.height//2 - text.get_height()//2))
-        pygame.display.update()
-        
-    #pygame function to draw the game board
-    def draw_board(self, board, screen):
-        
-        for c in range(self.Columns):
-            for r in range(self.Rows):
-                pygame.draw.rect(self.screen, ((170, 230, 210)),
-                                ((self.length-self.Columns*self.blocksize)/2+c*self.blocksize,r*self.blocksize+self.blocksize,
-                                self.blocksize, self.blocksize))
-
-                pygame.draw.circle(self.screen, (255,255,255),
-                                (int((self.length-self.Columns*self.blocksize)/2+ c*self.blocksize + self.blocksize/2),
-                                    int(r*self.blocksize + self.blocksize + self.blocksize/2)),
-                                60)
-
-        pygame.display.update()
-
-    #Function to handle the game loop and user interactions
-    def play(self):
-            
-            self.screen.fill((255, 245, 240))
-            self.draw_board(self.board, self.screen)
-
-            while self.runningstatus:
-               
-                #Displaying messages related to invalid moves or game outcomes at the top of the screen
-                font = pygame.font.SysFont(None,80)
-                text = font.render(self.message, True, (0,0,0))
-                self.screen.blit(text, (700, 10)) 
-
-                self.message=f"{self.Get_current_player()}'s turn. Click to drop a piece."
-
-                for event in pygame.event.get():
-                    pygame.display.set_caption("MiniGameHub-Connect4")
-
-                    if event.type==pygame.QUIT:
-                        self.runningstatus=False
-                    if event.type==pygame.MOUSEBUTTONDOWN:
-                        x=event.pos[0]
-                        col=int((x-600)/self.blocksize)
-                        self.movevalid=True
-                        self.drop_piece(col,self.player)
-                        if self.movevalid:
-                            if self.check_win(self.player):
-                                pygame.draw.rect(self.screen, (255,245,240), (0,0,self.length,100))
-                                self.message=f"{self.Get_current_player()} wins!"
-                                text = font.render(self.message, True, (0,0,0))                                
-                                self.screen.blit(text, (700, 10))
-                                pygame.display.update()
-                                pygame.time.wait(1000)
-                                if self.player==1:
-                                    self.winner=self.player1
-                                elif self.player==2:
-                                    self.winner=self.player2
-                                self.show_winner()
-                                wait_time=4000
-                                pygame.time.wait(wait_time)
-                                self.runningstatus=False
-                            else:
-                                self.switch_turn()
-                                if self.Get_current_player()==self.player1:
-                                    self.player=1
-                                elif self.Get_current_player()==self.player2:
-                                    self.player=2
-                        else:
-                            pygame.display.set_caption("Invalid move! Try again.")
-                            self.movevalid=True
-
-                pygame.display.update()
-                #Checking for a draw condition after each move by verifying if the board is full without any winner
-                if self.board_full():
-                    self.winner=None
-                    self.show_winner()
-                    self.runningstatus=False
-                
-                 #Clearing the message area at the top of the screen before displaying any new messages related to invalid moves or game outcomes
-                pygame.draw.rect(self.screen, (255,245,240), (0,0,self.length,100))
-
-            pygame.quit()
-            
-
-                         
 
     #Checking for win conditions in all possible directions (horizontal, vertical, diagonal)
     def check_win(self,player):
@@ -161,7 +112,84 @@ class connect4(basegame):
         elif np.any(win[:-3, 3:7] & win[1:-2, 2:6] & win[2:-1, 1:5] & win[3:7, 0:4]):
             return True
         else:
-            return False
+            return False  
+
+    #Function to check if the board is full (indicating a draw)       
+    def board_full(self):
+        return np.all(self.board != 0)
+    
+    #Function to display the winner and end the game
+    def show_winner(self):
+        self.screen.fill((255,180,150  ))
+        font = pygame.font.SysFont("Arial", 150)
+        if self.winner != None:
+            text = font.render(f"{self.winner} wins! ", True, (0, 0, 0))
+        else:
+            text = font.render("It's a draw!", True, (0, 0, 0))
+        self.screen.blit(text, (self.length//2 - text.get_width()//2, self.height//2 - text.get_height()//2))
+        pygame.display.update()
+        
+    
+    #Function to handle the game loop and user interactions
+    def play(self):
+
+            while self.runningstatus:
+                self.draw_board(self.board,self.screen)
+                self.get_board()
+                #Displaying messages related to invalid moves or game outcomes at the top of the screen
+                font = pygame.font.SysFont(None,80)
+                text = font.render(self.message, True, (0,0,0))
+                self.screen.blit(text, (700, 10)) 
+
+                self.message=f"{self.Get_current_player()}'s turn. Click to drop a piece."
+
+                for event in pygame.event.get():
+                    pygame.display.set_caption("MiniGameHub-Connect4")
+
+                    if event.type==pygame.QUIT:
+                        self.runningstatus=False
+                    if event.type==pygame.MOUSEBUTTONDOWN:
+                        x=event.pos[0]
+                        col=int((x-600)/self.blocksize)
+                        self.movevalid=True
+                        self.drop_piece(col,self.player)
+                        if self.movevalid:
+                            if self.check_win(self.player):
+                                self.message=f"{self.Get_current_player()} wins!"
+                                text = font.render(self.message, True, (0,0,0))                                
+                                self.screen.blit(text, (700, 10))
+                                pygame.display.update()
+                                pygame.time.wait(1000)
+                                if self.player==1:
+                                    self.winner=self.player1
+                                elif self.player==2:
+                                    self.winner=self.player2
+                                self.show_winner()
+                                wait_time=4000
+                                pygame.time.wait(wait_time)
+                                self.runningstatus=False
+                            elif self.board_full():
+                                self.winner=None
+                                self.show_winner()
+                                self.runningstatus=False    
+                            else:
+                                self.switch_turn()
+                                if self.Get_current_player()==self.player1:
+                                    self.player=1
+                                elif self.Get_current_player()==self.player2:
+                                    self.player=2
+                        else:
+                            pygame.display.set_caption("Invalid move! Try again.")
+                            self.movevalid=True
+
+                pygame.display.update()
+               
+                    
 
 
+            pygame.quit()
+            
 
+                         
+
+    
