@@ -14,7 +14,7 @@ class othello(basegame):
         self.cell_size=150
         self.message=" "
         self.screen=pygame.display.set_mode((self.length,self.width))
-        pygame.display.set_caption("Othello Game")
+        pygame.display.set_caption("Othello")
         self.BOARD_X=600
         self.BOARD_Y=200
         self.board[3][3]=-1
@@ -42,13 +42,17 @@ class othello(basegame):
                 if self.board[row][col]==1:
 
                     pygame.draw.circle(self.screen,(0,0,0),(x,y),60)
+                    pygame.draw.circle(self.screen,(44,44,44),(x,y),50)
+                    pygame.draw.circle(self.screen,(0,0,0),(x,y),40)
                 elif self.board[row][col]==-1:
 
                     pygame.draw.circle(self.screen,(255,255,255),(x,y),60)
+                    pygame.draw.circle(self.screen,(220,221,220),(x,y),50)
+                    pygame.draw.circle(self.screen,(255,255,255),(x,y),40)
                 else:
                     if self.is_valid_move(row, col, self.to_move):
                         
-                        pygame.draw.circle(self.screen, (142,69,133), (x,y), 5)
+                        pygame.draw.circle(self.screen, (142,69,133), (x,y), 10)
 
             
     def is_valid_move(self, row, col, player):
@@ -132,19 +136,14 @@ class othello(basegame):
                                 pygame.time.wait(500)
                                 self.count_pieces()
                                 self.screen.fill((214,234,240))
-                                font = pygame.font.SysFont(None, 100)
-                                text = font.render("Game Over!", True, (0, 0, 128))
-                                self.screen.blit(text, (300, 10))
                                 font = pygame.font.SysFont("Arial", 36)
                                 if self.count_black > self.count_white:
-                                    text = font.render("Black wins!", True, (0, 0, 128))
                                     self.winner= self.player1
                                 elif self.count_white > self.count_black:
-                                    text = font.render("White wins!", True, (0, 0, 128))
                                     self.winner= self.player2
                                 else:
                                     text = font.render("It's a tie!", True, (0, 0, 128))
-                                self.screen.blit(text, (300, 50))
+                                    self.screen.blit(text, (300, 50))
                                 text=font.render(self.winner + " wins the game!", True, (0, 0, 128))
                                 self.screen.blit(text, (300, 100))
                                 pygame.display.update()
@@ -155,17 +154,13 @@ class othello(basegame):
                 pygame.time.wait(500)
                 self.screen.fill((214,234,240))
                 font = pygame.font.SysFont("Arial", 100)
-                text = font.render("Game Over!", True, (0, 0, 128))                        
-                self.screen.blit(text, (300, 10))
                 if self.count_black > self.count_white:
-                    text = font.render("Black wins!", True, (0, 0, 128))
                     self.winner= self.player1
                 elif self.count_white > self.count_black:
-                    text = font.render("White wins!", True, (0, 0, 128))
                     self.winner= self.player2
                 else:
                     text = font.render("It's a tie!", True, (0, 0, 128))
-                self.screen.blit(text, (300, 50))
+                    self.screen.blit(text, (300, 100))
                 text=font.render(self.winner + " wins the game!", True, (0, 0, 128))
                 self.screen.blit(text, (300, 100))
                 pygame.display.update()
