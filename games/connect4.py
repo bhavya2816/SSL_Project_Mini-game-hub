@@ -45,7 +45,7 @@ class connect4(basegame):
                 
                 pygame.draw.circle(self.screen,(0,0,0),(int((self.length-self.Columns*self.blocksize)/2+ c*self.blocksize + self.blocksize/2),
                                     int(r*self.blocksize + self.blocksize + self.blocksize/2)),80,5)
-        
+               
 
     #to get previous board after each move
     def get_board(self):
@@ -128,6 +128,8 @@ class connect4(basegame):
             text = font.render("It's a draw!", True, (0, 0, 0))
         self.screen.blit(text, (self.length//2 - text.get_width()//2, self.height//2 - text.get_height()//2))
         pygame.display.update()
+        pygame.time.wait(2000)
+    
         
     
     #Function to handle the game loop and user interactions
@@ -138,10 +140,10 @@ class connect4(basegame):
                 self.get_board()
                 #Displaying messages related to invalid moves or game outcomes at the top of the screen
                 font = pygame.font.SysFont(None,80)
-                text = font.render(self.message, True, (0,0,0))
+                text = font.render(f"{self.Get_current_player()}'s turn. Click to drop a piece.", True, (0,0,0))
                 self.screen.blit(text, (700, 10)) 
 
-                self.message=f"{self.Get_current_player()}'s turn. Click to drop a piece."
+               # self.message=
 
                 for event in pygame.event.get():
                     pygame.display.set_caption("MiniGameHub-Connect4")
@@ -183,11 +185,8 @@ class connect4(basegame):
                             self.movevalid=True
 
                 pygame.display.update()
-               
-                    
-
-
-            pygame.quit()
+            pygame.quit()  
+    
             
 
                          

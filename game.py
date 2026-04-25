@@ -84,7 +84,7 @@ def gameloop():
                 if event.type == pygame.QUIT:
                     running=False
                     pygame.quit()
-
+                    sys.exit()
 
                 if event.type == pygame.MOUSEBUTTONDOWN:
                     x, y =event.pos
@@ -130,6 +130,7 @@ def gameloop():
                     #Asking whether to continue to the menu or exit
 
                     gameloop()
+                
         
             
 

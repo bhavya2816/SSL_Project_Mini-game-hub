@@ -6,7 +6,7 @@ login() {
 	#If registered ask for password or else Ask if the user want to register
          if grep -q "$1\	" users.tsv; then
                 echo "Enter your password";
-                 read password;
+                 read -s password;
                  checkpassword "$1" "$password"
 
         else
@@ -39,7 +39,7 @@ checkpassword() {
                 echo "Login successful!";
         else
                 echo -e "Password is incorrect!\nRetry";
-                read password;
+                read -s password;
                 checkpassword "$1" "$password"
         fi
 }
@@ -63,7 +63,7 @@ player-2_login() {
 Register() {
 				username="$1"
 		   		echo "Enter your password to register";
-              	read password;
+              	read -s password;
               	echo -e "$username\t$(Hash_string "$password" )" >> users.tsv
 
 
