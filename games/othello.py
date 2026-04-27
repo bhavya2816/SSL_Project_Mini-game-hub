@@ -31,7 +31,11 @@ class othello(basegame):
             pygame.draw.line(self.screen,(0,0,0),(self.BOARD_X,self.BOARD_Y + i*self.cell_size),(self.BOARD_X+self.Columns*self.cell_size,self.BOARD_Y+i*self.cell_size),2)
         for j in range(1,self.Columns):
             pygame.draw.line(self.screen,(0,0,0),(self.BOARD_X+j*self.cell_size,self.BOARD_Y),(self.BOARD_X+j*self.cell_size,self.BOARD_Y+self.Rows*self.cell_size),2)
-
+        font = pygame.font.SysFont("comicsansms",80)
+        text=font.render(f"{self.player1} : {self.count_black}",True,(0,0,0))
+        self.screen.blit(text,(100,700))
+        text=font.render(f"{self.player2} : {self.count_white}",True,(255,255,255))
+        self.screen.blit(text,(100,900))
     def draw_moves(self):
   
 
@@ -123,6 +127,7 @@ class othello(basegame):
                             self.change_color(row, col, self.to_move)
                             self.to_move = -self.to_move
                             self.draw_moves()
+                           
                             pygame.display.update()
                             self.count_pieces()
                             if np.sum(self.board == 0) == 0 or self.count_black == 0 or self.count_white == 0:

@@ -37,7 +37,7 @@ class basegame:
 
 #Function to display the menu and get the user's choice
 def menu():
-
+    pygame.init()
     global screen
     screen=pygame.display.set_mode((2400, 1600))
     screen.fill((230,230,250))
@@ -73,6 +73,54 @@ def menu():
 
             if event.type == pygame.MOUSEBUTTONDOWN:
                 return      
+#Creating a loop to create lead board screen
+def leaderboard():
+    screen =pygame.display.set_mode((2400,1600))
+    screen.fill((230,230,250))
+    pygame.display.set_caption("MINIGAMEHUB")
+    font = pygame.font.SysFont(None,100)
+    font1=pygame.font.SysFont(None,75)
+    text= font.render("Leaderboard",True,(0,0,0))
+    screen.blit(text,(1000,200))
+    text= font1.render("Sort by",True,(0,0,0))
+    screen.blit(text,(1000,400))
+    pygame.draw.rect(screen,(142,69,123),(900,600,600,100))
+    text= font1.render("Player Name",True,(255,255,255))
+    screen.blit(text,(925,625))
+    pygame.draw.rect(screen,(142,69,123),(900,750,600,100))
+    text= font1.render("No. of Wins",True,(255,255,255))
+    screen.blit(text,(925,775))
+    pygame.draw.rect(screen,(142,69,123),(900,900,600,100))
+    text= font1.render("No. of Losses",True,(255,255,255))
+    screen.blit(text,(925,925))
+    pygame.draw.rect(screen,(142,69,123),(900,1050,600,100))
+    text= font1.render("Win-Loss Ratio",True,(255,255,255))
+    screen.blit(text,(925,1075))
+
+    pygame.draw.rect(screen,(142,69,123),(2000,1300,200,100))
+    text= font1.render("Next",True,(255,255,255))
+    screen.blit(text,(2025,1325))
+    pygame.display.update()
+    while True:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                sys.exit()
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                x,y = event.pos
+                if 900 <= x <= 1500 and 600<= y <= 700:
+                    subprocess.run(["bash","leaderboard.sh","1"])       
+                elif 900 <= x <= 1500 and 750 <= y <= 850:
+                    subprocess.run(["bash","leaderboard.sh","2"])
+                elif 900 <= x <= 1500 and 900<= y <= 1000:
+                    subprocess.run(["bash","leaderboard.sh","3"])
+                elif 900 <=x <= 1500 and 1050 <= y<= 1150:
+                    subprocess.run(["bash","leaderboard.sh","4"])
+                if 2000 <= x <= 2200 and 1300<= y <= 1400:
+                    pygame.quit()
+                    return
+
+
 
 #Creating a fn to run the menu , the leaderboard and analysis          
 def gameloop():
@@ -119,17 +167,19 @@ def gameloop():
                         loser="Draw"
                         winner="Draw"
                     #Storing the winner of the game in history.csv
-                    with open("history.csv", "a") as f:
-                        f.write(f"{winner},{loser},{date.today()},{datetime.now().strftime('%H:%M:%S')},{game_played}\n")  
-                    
-                    #Displaying leaderboard
-                    subprocess.run(["bash","leaderboard.sh"])
-                    #Displaying matplot graphs of games that are played most
+                    if winner!="Draw":
+                        with open("history.csv", "a") as f:
+                            f.write(f"{winner},{loser},{date.today()},{datetime.now().strftime('%H:%M:%S')},{game_played}\n")  
+                        
+                        #Displaying leaderboard
+                        leaderboard()
+                        #}subprocess.run(["bash","leaderboard.sh"])
+                        #Displaying matplot graphs of games that are played most
 
 
-                    #Asking whether to continue to the menu or exit
+                        #Asking whether to continue to the menu or exit
 
-                    gameloop()
+                        gameloop()
                 
         
             
