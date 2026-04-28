@@ -4,6 +4,7 @@ import numpy as np
 import pygame
 from datetime import datetime, date, time
 import subprocess
+import matplotlib.pyplot as plt
 
 #Class to control the game flow and manage the board state
 class basegame:
@@ -166,9 +167,58 @@ def leaderboard():
                     pygame.quit()
                     return
 
-#Defining a funtion to plot matplotlib graphs
+#Defining a funtion to plot matplotlib graphs for the analysis of games played and wins of players
 def graph_Analysis():
-    pass
+    #Calculating the number of wins for each player and plotting a bar graph to show the top 5 players with the most wins
+    players=[]
+    with open("history.csv", "r") as f:
+        for line in f:
+            data=line.strip().split(",")
+            players.append(data[0])
+    
+    win_counts={}
+    with open("history.csv", "r") as f:
+        for line in f:
+            data=line.strip().split(",")
+            winner=data[0]
+            if winner in win_counts:
+                win_counts[winner] += 1
+            else:
+                win_counts[winner] = 1
+    win_counts=top_players(win_counts)
+    plt.subplot(1,2,1)
+    plt.bar(win_counts.keys(), win_counts.values())
+    plt.xlabel("Players")
+    plt.ylabel("Wins")
+    plt.title("Number of Wins per Player")
+
+    #Calculating the number of times each game is played and plotting a pie chart to show the distribution of games played
+    games_played={}
+    with open ("history.csv", "r") as f:
+        for line in f:
+            data=line.strip().split(",")
+            game=data[4]
+            if game in games_played:
+                games_played[game] += 1
+            else:
+                games_played[game] = 1
+    plt.subplot(1,2,2)
+    plt.pie(games_played.values(), labels=games_played.keys(), autopct='%1.1f%%')
+    plt.title("Game Popularity")
+    plt.show()
+
+#Function to filter the top 5 players with the most wins for better visualization in the graph
+def top_players(win_counts):
+    if len(win_counts)>5:
+                min_win_count=min(win_counts.values())
+                for player in list(win_counts.keys()):
+                    if win_counts[player] == min_win_count:
+                        del win_counts[player]
+                        top_players(win_counts)
+                        break
+                        
+    return win_counts
+
 
 #Creating a window to ask wheter to continue or Exit
 def Continue_Or_Not():
