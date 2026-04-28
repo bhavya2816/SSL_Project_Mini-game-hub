@@ -9,18 +9,29 @@ class connect4(basegame):
     #Initializing the game with player names, board dimensions, and setting up the pygame window
     def __init__(self,player1,player2):
         super().__init__(player1,player2,7,7)
+
+        #Screen dimensions
         self.length=2400
-        self.height=1600    
+        self.height=1600
+
+        #Varibale indicating game state    
         self.runningstatus=True
         self.movevalid=True
+
+        #Assigning a numeric value to current player
         if self.Current_player==self.player1:
             self.player=1
         else:           
             self.player=2
+
+        #Blocksize for each grid
         self.blocksize=180
-        self.message=""
+
+        #centering the board on screen
         self.X_posn=(self.length-self.Columns*self.blocksize)/2
         self.Y_posn=(self.height-self.Rows*self.blocksize)/2
+
+        #Initializing pygame window
         pygame.init()
         self.screen=pygame.display.set_mode((self.length, self.height))
         
@@ -28,18 +39,26 @@ class connect4(basegame):
     def draw_board(self, board, screen):
         self.screen.fill((245,245,220))
 
+        # Draw outer board rectangle
         pygame.draw.rect(self.screen,(0,0,255),(self.X_posn-100,self.Y_posn-50,
                          self.Columns*self.blocksize+200,self.blocksize*self.Rows+100))
+        
+       # Draw border  
         pygame.draw.rect(self.screen,(0,0,0),(self.X_posn-100,self.Y_posn-50,
                          self.Columns*self.blocksize+200,self.blocksize*self.Rows+100),8)
+        
+        # Draw grid cells and empty circles
         for c in range(self.Columns):
             for r in range(self.Rows):
                 pygame.draw.rect(self.screen, ((0,0,255)),
                                 ((self.length-self.Columns*self.blocksize)/2+c*self.blocksize,r*self.blocksize+self.blocksize,
                                 self.blocksize, self.blocksize))
-
+                
+                #Drawing slot
                 pygame.draw.circle(self.screen, (245,245,220),(int((self.length-self.Columns*self.blocksize)/2+ c*self.blocksize + self.blocksize/2),
                                     int(r*self.blocksize + self.blocksize + self.blocksize/2)),70)
+                
+                #drawing Slot Border
                 pygame.draw.circle(self.screen,(0,0,0),(int((self.length-self.Columns*self.blocksize)/2+ c*self.blocksize + self.blocksize/2),
                                     int(r*self.blocksize + self.blocksize + self.blocksize/2)),70,5)
                 
@@ -60,8 +79,8 @@ class connect4(basegame):
     #Function for animating the drop
     def drop_animation(self,col,final_row,Player):
         x=self.X_posn+col*self.blocksize+self.blocksize//2
-        y=100
-        target_y=self.Y_posn+final_row*self.blocksize+self.blocksize/2
+        y=100                               #Starting height
+        target_y=self.Y_posn+final_row*self.blocksize+self.blocksize/2      # Final y 
 
         while y<=target_y+10:
             self.draw_board(self.board,self.screen)
@@ -70,7 +89,7 @@ class connect4(basegame):
             pygame.draw.circle(self.screen,(255,0,0) if Player==1 else (255,255,0),(x,y),66)
             pygame.display.update()
             clock=pygame.time.Clock()
-            clock.tick(60)
+            clock.tick(60)                      # Control Animation speed
 
             y+=20
 
@@ -120,7 +139,7 @@ class connect4(basegame):
     
     #Function to display the winner and end the game
     def show_winner(self):
-        self.screen.fill((255,180,150  ))
+        self.screen.fill((255,180,150))
         font = pygame.font.SysFont("Arial", 150)
         if self.winner != None:
             text = font.render(f"{self.winner} wins! ", True, (0, 0, 0))
@@ -138,26 +157,30 @@ class connect4(basegame):
             while self.runningstatus:
                 self.draw_board(self.board,self.screen)
                 self.get_board()
-                #Displaying messages related to invalid moves or game outcomes at the top of the screen
+                #Displaying whose turn it is now
                 font = pygame.font.SysFont(None,80)
-                text = font.render(f"{self.Get_current_player()}'s turn. Click to drop a piece.", True, (0,0,0))
+                text = font.render(f"{self.Current_player}'s turn. Click to drop a piece.", True, (0,0,0))
                 self.screen.blit(text, (700, 10)) 
-
-               # self.message=
 
                 for event in pygame.event.get():
                     pygame.display.set_caption("MiniGameHub-Connect4")
 
+                    #Quit event Handling
                     if event.type==pygame.QUIT:
                         self.runningstatus=False
+
+                    #handling mouse click
                     if event.type==pygame.MOUSEBUTTONDOWN:
                         x=event.pos[0]
+                        #Finding column from X-Co-ordinate
                         col=int((x-600)/self.blocksize)
                         self.movevalid=True
                         self.drop_piece(col,self.player)
                         if self.movevalid:
+
+                            #Check for win
                             if self.check_win(self.player):
-                                self.message=f"{self.Get_current_player()} wins!"
+                                self.message=f"{self.Current_player} wins!"
                                 text = font.render(self.message, True, (0,0,0))                                
                                 self.screen.blit(text, (700, 10))
                                 pygame.display.update()
@@ -170,16 +193,19 @@ class connect4(basegame):
                                 wait_time=4000
                                 pygame.time.wait(wait_time)
                                 self.runningstatus=False
+                            #Check for draw
                             elif self.board_full():
                                 self.winner=None
                                 self.show_winner()
-                                self.runningstatus=False    
+                                self.runningstatus=False 
+                            # Switching turns if game is not over   
                             else:
                                 self.switch_turn()
-                                if self.Get_current_player()==self.player1:
+                                if self.Current_player==self.player1:
                                     self.player=1
-                                elif self.Get_current_player()==self.player2:
+                                elif self.Current_player==self.player2:
                                     self.player=2
+                        #Asking to chose another move if move is not invalid i.e, col is full
                         else:
                             pygame.display.set_caption("Invalid move! Try again.")
                             self.movevalid=True

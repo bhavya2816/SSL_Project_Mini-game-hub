@@ -1,9 +1,9 @@
 #!/bin/bash
 # This script displays the leaderboard of the game.
-#it reads the winner's name and the game played from the history.csv file and displays it in a formatted manne
+#it reads the winner's name and the game played from the history.csv file and displays it in a formatted manner
 echo "--------------------------------------------------------"
 awk -F',' '
-
+#Creating arrays and storing the no. of wins and losses per player per game 
 {if ($5=="Connect4"){
 wins_Connect4[$1]++
 losses_Connect4[$2]++
@@ -18,11 +18,11 @@ if ($5=="Othello"){
 wins_othello[$1]++
 losses_othello[$2]++
 }
-
+#Creating a player array such that every person who has won or lost atleast once will be there in it
 players[$1]=1
 players[$2]=1
 }
-
+#Calculation win/loss and printing it as per the sort factor choosen as  a table
 END{
     
     for (player in players){
