@@ -201,6 +201,9 @@ def graph_Analysis():
     games_played={}
     with open ("history.csv", "r") as f:
         for line in f:
+            isnotempty=line.strip()
+            if not isnotempty:
+                continue
             data=line.strip().split(",")
             game=data[4]
             if game in games_played:
