@@ -172,12 +172,18 @@ def graph_Analysis():
     players=[]
     with open("history.csv", "r") as f:
         for line in f:
+            isnotempty=line.strip()
+            if not isnotempty:
+                continue
             data=line.strip().split(",")
             players.append(data[0])
     
     win_counts={}
     with open("history.csv", "r") as f:
         for line in f:
+            isnotempty=line.strip()
+            if not isnotempty:
+                continue
             data=line.strip().split(",")
             winner=data[0]
             if winner in win_counts:
