@@ -11,8 +11,8 @@ class connect4(basegame):
         super().__init__(player1,player2,7,7)
 
         #Screen dimensions
-        self.length=2400
-        self.height=1600
+        self.length=1920
+        self.height=1080
 
         #Varibale indicating game state    
         self.runningstatus=True
@@ -25,7 +25,7 @@ class connect4(basegame):
             self.player=2
 
         #Blocksize for each grid
-        self.blocksize=180
+        self.blocksize=120
 
         #centering the board on screen
         self.X_posn=(self.length-self.Columns*self.blocksize)/2
@@ -56,14 +56,14 @@ class connect4(basegame):
                 
                 #Drawing slot
                 pygame.draw.circle(self.screen, (245,245,220),(int((self.length-self.Columns*self.blocksize)/2+ c*self.blocksize + self.blocksize/2),
-                                    int(r*self.blocksize + self.blocksize + self.blocksize/2)),70)
+                                    int(r*self.blocksize + self.blocksize + self.blocksize/2)),45)
                 
                 #drawing Slot Border
                 pygame.draw.circle(self.screen,(0,0,0),(int((self.length-self.Columns*self.blocksize)/2+ c*self.blocksize + self.blocksize/2),
-                                    int(r*self.blocksize + self.blocksize + self.blocksize/2)),70,5)
+                                    int(r*self.blocksize + self.blocksize + self.blocksize/2)),45,5)
                 
                 pygame.draw.circle(self.screen,(0,0,0),(int((self.length-self.Columns*self.blocksize)/2+ c*self.blocksize + self.blocksize/2),
-                                    int(r*self.blocksize + self.blocksize + self.blocksize/2)),80,5)
+                                    int(r*self.blocksize + self.blocksize + self.blocksize/2)),53,5)
                
 
     #to get previous board after each move
@@ -73,20 +73,20 @@ class connect4(basegame):
                 if self.board[r][c] !=0:
                     pygame.draw.circle(self.screen,(255,0,0) if self.board[r][c]==1 else (255,255,0),
                                        (self.X_posn+c*self.blocksize+self.blocksize/2,
-                                        self.Y_posn+r*self.blocksize+self.blocksize/2+9),66)
+                                        self.Y_posn+r*self.blocksize+self.blocksize/2),40)
 
 
     #Function for animating the drop
     def drop_animation(self,col,final_row,Player):
         x=self.X_posn+col*self.blocksize+self.blocksize//2
-        y=100                               #Starting height
+        y=80                         #Starting height
         target_y=self.Y_posn+final_row*self.blocksize+self.blocksize/2      # Final y 
 
         while y<=target_y+10:
             self.draw_board(self.board,self.screen)
             self.get_board()
 
-            pygame.draw.circle(self.screen,(255,0,0) if Player==1 else (255,255,0),(x,y),66)
+            pygame.draw.circle(self.screen,(255,0,0) if Player==1 else (255,255,0),(x,y),40)
             pygame.display.update()
             clock=pygame.time.Clock()
             clock.tick(60)                      # Control Animation speed
@@ -160,7 +160,7 @@ class connect4(basegame):
                 #Displaying whose turn it is now
                 font = pygame.font.SysFont(None,80)
                 text = font.render(f"{self.Current_player}'s turn. Click to drop a piece.", True, (0,0,0))
-                self.screen.blit(text, (700, 10)) 
+                self.screen.blit(text, (500, 10)) 
 
                 for event in pygame.event.get():
                     pygame.display.set_caption("MiniGameHub-Connect4")
@@ -168,12 +168,14 @@ class connect4(basegame):
                     #Quit event Handling
                     if event.type==pygame.QUIT:
                         self.runningstatus=False
+                        pygame.quit()
+                        sys.exit()
 
                     #handling mouse click
                     if event.type==pygame.MOUSEBUTTONDOWN:
                         x=event.pos[0]
                         #Finding column from X-Co-ordinate
-                        col=int((x-600)/self.blocksize)
+                        col=int((x-self.X_posn)/self.blocksize)
                         self.movevalid=True
                         self.drop_piece(col,self.player)
                         if self.movevalid:
@@ -182,7 +184,7 @@ class connect4(basegame):
                             if self.check_win(self.player):
                                 self.message=f"{self.Current_player} wins!"
                                 text = font.render(self.message, True, (0,0,0))                                
-                                self.screen.blit(text, (700, 10))
+                                self.screen.blit(text, (500, 10))
                                 pygame.display.update()
                                 pygame.time.wait(1000)
                                 if self.player==1:
@@ -190,8 +192,6 @@ class connect4(basegame):
                                 elif self.player==2:
                                     self.winner=self.player2
                                 self.show_winner()
-                                wait_time=4000
-                                pygame.time.wait(wait_time)
                                 self.runningstatus=False
                             #Check for draw
                             elif self.board_full():

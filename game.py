@@ -6,6 +6,8 @@ from datetime import datetime, date, time
 import subprocess
 import matplotlib.pyplot as plt
 
+pygame.init()
+
 #Class to control the game flow and manage the board state
 class basegame:
     
@@ -47,12 +49,10 @@ class basegame:
 
 #Function to display the menu and get the user's choice
 def menu():
-    # Initialize pygame
-    pygame.init()
 
     # Create display window
     global screen
-    screen=pygame.display.set_mode((2400, 1600))
+    screen=pygame.display.set_mode((1920,1080))
 
     # Set background color
     screen.fill((230,230,250))
@@ -66,21 +66,20 @@ def menu():
     
     #Drawing the menu interface with options for different games using pygame
     
-    pygame.draw.rect(screen,(230,230,250), (825, 300,775 ,150 ))
     text1=font1.render("MINI GAME HUB", True, (0, 0, 0))
-    screen.blit(text1, (825, 325))
+    screen.blit(text1, (660, 220))
 
-    pygame.draw.rect(screen, (142,69,123), (950,  500, 500,100 ))
+    pygame.draw.rect(screen, (142,69,123), (700,  400, 500,100 ))
     text2=font.render("1. Tic Tac Toe", True, (255, 255, 255))
-    screen.blit(text2, (975, 525))
+    screen.blit(text2, (725, 425))
 
-    pygame.draw.rect(screen, (142,69,123), (950, 700, 500,100 ))
+    pygame.draw.rect(screen, (142,69,123), (700,550, 500,100 ))
     text3=font.render("2. Othello", True, (255, 255, 255))
-    screen.blit(text3, (975, 725))
+    screen.blit(text3, (725, 575))
 
-    pygame.draw.rect(screen, (142,69,123), (950, 900, 500,100 ))
+    pygame.draw.rect(screen, (142,69,123), (700, 700, 500,100 ))
     text4=font.render("3. Connect4", True, (255, 255, 255))
-    screen.blit(text4, (975, 925))
+    screen.blit(text4, (725, 725))
 
     #Updating the display to show all the elements
     pygame.display.update()
@@ -98,7 +97,7 @@ def menu():
 #Function to show the sort factors of leader board
 def leaderboard():
     # Create the main display window with given resolution
-    screen =pygame.display.set_mode((2400,1600))
+    screen =pygame.display.set_mode((1920,1080))
 
     # Fill background with a light color
     screen.fill((230,230,250))
@@ -112,33 +111,33 @@ def leaderboard():
      
     # Render and display "Leaderboard" title
     text= font.render("Leaderboard",True,(0,0,0))
-    screen.blit(text,(1000,200))
+    screen.blit(text,(800,100))
     
     # Render and display "Sort by: " sub-title
     text= font1.render("Sort by:",True,(0,0,0))
-    screen.blit(text,(1000,400))
+    screen.blit(text,(800,250))
 
     #Drawing buttons for sort options
-    pygame.draw.rect(screen,(142,69,123),(900,600,600,100))
+    pygame.draw.rect(screen,(142,69,123),(700,400,600,100))
     text= font1.render("Player Name",True,(255,255,255))
-    screen.blit(text,(925,625))
+    screen.blit(text,(725,425))
 
-    pygame.draw.rect(screen,(142,69,123),(900,750,600,100))
+    pygame.draw.rect(screen,(142,69,123),(700,550,600,100))
     text= font1.render("No. of Wins",True,(255,255,255))
-    screen.blit(text,(925,775))
+    screen.blit(text,(725,575))
 
-    pygame.draw.rect(screen,(142,69,123),(900,900,600,100))
+    pygame.draw.rect(screen,(142,69,123),(700,700,600,100))
     text= font1.render("No. of Losses",True,(255,255,255))
-    screen.blit(text,(925,925))
+    screen.blit(text,(725,725))
 
-    pygame.draw.rect(screen,(142,69,123),(900,1050,600,100))
+    pygame.draw.rect(screen,(142,69,123),(700,850,600,100))
     text= font1.render("Win-Loss Ratio",True,(255,255,255))
-    screen.blit(text,(925,1075))
+    screen.blit(text,(725,875))
 
     #Drawing button to continue
-    pygame.draw.rect(screen,(142,69,123),(2000,1300,200,100))
+    pygame.draw.rect(screen,(142,69,123),(1650,900,200,100))
     text= font1.render("Next",True,(255,255,255))
-    screen.blit(text,(2025,1325))
+    screen.blit(text,(1675,925))
 
      # Update the display to show all elements
     pygame.display.update()
@@ -155,15 +154,15 @@ def leaderboard():
             if event.type == pygame.MOUSEBUTTONDOWN:
                 x,y = event.pos
                 #Checking which button is clicked and running bash leaderboard.sh with suitable argument
-                if 900 <= x <= 1500 and 600<= y <= 700:
+                if 700 <= x <= 1300 and 400<= y <= 500:
                     subprocess.run(["bash","leaderboard.sh","1"])       
-                elif 900 <= x <= 1500 and 750 <= y <= 850:
+                elif 700 <= x <= 1300 and 550 <= y <= 650:
                     subprocess.run(["bash","leaderboard.sh","2"])
-                elif 900 <= x <= 1500 and 900<= y <= 1000:
+                elif 700 <= x <= 1300 and 700<= y <= 800:
                     subprocess.run(["bash","leaderboard.sh","3"])
-                elif 900 <=x <= 1500 and 1050 <= y<= 1150:
+                elif 700 <=x <= 1300 and 850 <= y<= 950:
                     subprocess.run(["bash","leaderboard.sh","4"])
-                if 2000 <= x <= 2200 and 1300<= y <= 1400:
+                if 1650 <= x <= 1850 and 900<= y <= 1000:
                     pygame.quit()
                     return
 
@@ -285,7 +284,7 @@ def gameloop():
                     x, y =event.pos                         #Getting the mouse click coordinates
 
                     #If tic-tac-toe is selected
-                    if 950 <= x <= 1450 and 500 <= y <= 600:
+                    if 700 <= x <= 1200 and 400 <= y <= 500:
                         from games.tic_tac_toe import tic_tac_toe
                         game=tic_tac_toe(player1,player2)           #Initialize the game class
                         game.play()                                 #play the game
@@ -294,7 +293,7 @@ def gameloop():
                         game_played="Tic Tac Toe"
 
                     #If Othello is selected
-                    elif 950 <= x <= 1450 and 700 <= y <= 800:
+                    elif 700 <= x <= 1200 and 550 <= y <= 650:
                         from games.othello import othello
                         game=othello(player1,player2)
                         game.play()                                 #Play the game
@@ -303,7 +302,7 @@ def gameloop():
                         game_played="Othello"
 
                     #If Connect4 is chosen
-                    elif 950 <= x <= 1450 and 900 <= y <= 1000:
+                    elif 700 <= x <= 1200 and 700 <= y <= 800:
                         from games.connect4 import connect4
                         game=connect4(player1, player2)
                         game.play()                                # play the game

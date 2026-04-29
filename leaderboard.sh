@@ -1,6 +1,7 @@
 #!/bin/bash
 # This script displays the leaderboard of the game.
 #it reads the winner's name and the game played from the history.csv file and displays it in a formatted manner
+#Assumed that history.csv contains in the order of winner,loser,date,time and gameplayed for each game played
 echo "--------------------------------------------------------"
 awk -F',' '
 #Creating arrays and storing the no. of wins and losses per player per game 

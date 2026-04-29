@@ -10,18 +10,18 @@ pygame.init()
 class tic_tac_toe(basegame):
     def __init__(self,player1,player2):
         super().__init__(player1,player2,10,10)
-        self.length=2400
-        self.width=1600
+        self.length=1920
+        self.width=1080
         self.running=True
         if self.Current_player==self.player1:
             self.to_move=1
         else:
             self.to_move=2
-        self.cell_size=150
+        self.cell_size=100
         self.message=" "
         self.screen=pygame.display.set_mode((self.length,self.width))
-        self.BOARD_X=450
-        self.BOARD_Y=50
+        self.BOARD_X = (self.length - self.Columns * self.cell_size) // 2
+        self.BOARD_Y = (self.width - self.Rows * self.cell_size) // 2
         self.win_line=None
         self.winner=None
         #Loading and scaling the images for X and O to be displayed on the board when a player makes a move
@@ -34,9 +34,9 @@ class tic_tac_toe(basegame):
     def draw_board(self):
         pygame.display.set_caption("Tic-Tac-Toe")
         for i in range(1,self.Rows):
-            pygame.draw.line(self.screen,(0,0,0),(self.BOARD_X,self.BOARD_Y + i*self.cell_size),(self.BOARD_X+self.Columns*self.cell_size,self.BOARD_Y+i*self.cell_size),2)
+            pygame.draw.line(self.screen,(0,0,0),(self.BOARD_X,self.BOARD_Y + i*self.cell_size),(self.BOARD_X+self.Columns*self.cell_size,self.BOARD_Y+i*self.cell_size),3)
         for j in range(1,self.Columns):
-            pygame.draw.line(self.screen,(0,0,0),(self.BOARD_X+j*self.cell_size,self.BOARD_Y),(self.BOARD_X+j*self.cell_size,self.BOARD_Y+self.Rows*self.cell_size),2)
+            pygame.draw.line(self.screen,(0,0,0),(self.BOARD_X+j*self.cell_size,self.BOARD_Y),(self.BOARD_X+j*self.cell_size,self.BOARD_Y+self.Rows*self.cell_size),3)
 
     #Function to check winning condition
     def check_winner(self):
@@ -82,11 +82,13 @@ class tic_tac_toe(basegame):
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     self.running = False
+                    pygame.quit()
+                    sys.exit()
                 if event.type == pygame.MOUSEBUTTONDOWN:
                     x=event.pos[0]
                     y=event.pos[1]
-                    col = (x - self.BOARD_X)//self.cell_size
-                    row = (y - self.BOARD_Y)//self.cell_size
+                    col =int((x - self.BOARD_X)//self.cell_size)
+                    row = int((y - self.BOARD_Y)//self.cell_size)
                     if 0<=row<10 and 0<=col<10:
                         if self.board[row][col]==0:
                             self.board[row][col]=self.to_move

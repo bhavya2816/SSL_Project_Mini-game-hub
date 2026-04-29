@@ -46,7 +46,7 @@ checkpassword() {
 
 
 #Function for login of second user
-player-2_login() {
+player2_login() {
 	#Checking that 1st username is not same as 2nd username
 	if [ "$1" != "$username1" ]; then 
 		
@@ -54,7 +54,7 @@ player-2_login() {
 	else 
 		echo -e "Player-2 cannot be same as Player-1\nPlease try again"
 		read username2again;
-		player-2_login "$username2again"
+		player2_login "$username2again"
 
 	fi
 }
@@ -79,6 +79,6 @@ login "$username1";
 #Authentication for player-2
 echo "Player-2 : Enter your username"
 read username2;
-player-2_login "$username2"
+player2_login "$username2"
 
 python3 game.py "$username1" "$username2"
